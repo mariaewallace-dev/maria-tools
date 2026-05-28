@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,7 +19,7 @@
   .page.active { display: block; }
   .card { background: white; border-radius: 12px; border: 1px solid #e5e5e5; padding: 20px; margin-bottom: 16px; }
   .card h2 { font-size: 16px; font-weight: 500; margin-bottom: 4px; }
-  .card p { font-size: 13px; color: #888; margin-bottom: 16px; }
+  .card p.desc { font-size: 13px; color: #888; margin-bottom: 16px; }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
   .form-group { display: flex; flex-direction: column; gap: 6px; }
   .form-group.full { grid-column: 1 / -1; }
@@ -43,30 +44,30 @@
   .result { display: none; margin-top: 16px; }
   .result.show { display: block; }
   .result-card { background: white; border-radius: 12px; border: 1px solid #e5e5e5; padding: 20px; margin-bottom: 12px; }
-  .result-section { margin-bottom: 16px; }
-  .result-section:last-child { margin-bottom: 0; }
-  .section-title { font-size: 11px; font-weight: 500; color: #888; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
-  .section-body { font-size: 14px; line-height: 1.6; color: #1a1a1a; }
-  .pill-row { display: flex; flex-wrap: wrap; gap: 6px; }
-  .pill { font-size: 12px; padding: 4px 10px; border-radius: 20px; background: #f5f4f0; color: #555; border: 1px solid #e5e5e5; }
-  .pill.red { background: #fef2f2; color: #991b1b; border-color: #fecaca; }
-  .pill.green { background: #f0fdf4; color: #166534; border-color: #bbf7d0; }
-  .pill.blue { background: #eff6ff; color: #1e40af; border-color: #bfdbfe; }
+  .rsec { margin-bottom: 16px; }
+  .rsec:last-child { margin-bottom: 0; }
+  .rtitle { font-size: 11px; font-weight: 500; color: #888; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+  .rbody { font-size: 14px; line-height: 1.6; color: #1a1a1a; }
   .score-row { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #e5e5e5; }
   .score-circle { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 500; flex-shrink: 0; }
   .score-high { background: #f0fdf4; color: #166534; }
   .score-mid { background: #fffbeb; color: #92400e; }
   .score-low { background: #fef2f2; color: #991b1b; }
   .score-meta h3 { font-size: 15px; font-weight: 500; margin-bottom: 2px; }
-  .score-meta p { font-size: 13px; color: #888; }
+  .score-meta p { font-size: 13px; }
   .verdict-apply { color: #166534; font-weight: 500; }
   .verdict-pass { color: #991b1b; font-weight: 500; }
   .verdict-maybe { color: #92400e; font-weight: 500; }
-  .q-list { list-style: none; }
-  .q-list li { padding: 8px 0; border-bottom: 1px solid #f0f0f0; font-size: 14px; display: flex; gap: 8px; line-height: 1.5; }
-  .q-list li:last-child { border-bottom: none; }
-  .q-list li::before { content: "→"; color: #888; flex-shrink: 0; margin-top: 1px; }
+  .ql { list-style: none; }
+  .ql li { padding: 8px 0; border-bottom: 1px solid #f0f0f0; font-size: 14px; display: flex; gap: 8px; line-height: 1.5; }
+  .ql li:last-child { border-bottom: none; }
+  .ql li::before { content: "->"; color: #888; flex-shrink: 0; }
   .divider { border: none; border-top: 1px solid #f0f0f0; margin: 16px 0; }
+  .story-block { border: 1px solid #e5e5e5; border-radius: 8px; padding: 12px; margin-bottom: 10px; }
+  .story-block:last-child { margin-bottom: 0; }
+  .story-title { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+  .story-text { font-size: 13px; color: #555; line-height: 1.6; margin-bottom: 6px; }
+  .story-stat { font-size: 12px; font-weight: 500; background: #f0fdf4; color: #166534; padding: 3px 10px; border-radius: 20px; display: inline-block; }
   .tracker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
   .stat-card { background: #f5f4f0; border-radius: 8px; padding: 16px; }
   .stat-card .num { font-size: 28px; font-weight: 500; }
@@ -74,36 +75,35 @@
   .job-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
   .job-row:last-child { border-bottom: none; }
   .job-info { flex: 1; }
-  .job-info .title { font-size: 14px; font-weight: 500; }
-  .job-info .company { font-size: 13px; color: #888; }
-  .status-badge { font-size: 11px; padding: 3px 8px; border-radius: 20px; font-weight: 500; }
-  .status-applied { background: #eff6ff; color: #1e40af; }
-  .status-screen { background: #fffbeb; color: #92400e; }
-  .status-interview { background: #f0fdf4; color: #166534; }
-  .status-rejected { background: #fef2f2; color: #991b1b; }
-  .status-offer { background: #fdf4ff; color: #7e22ce; }
-  .add-job-form { background: #f5f4f0; border-radius: 8px; padding: 16px; margin-bottom: 16px; display: none; }
-  .add-job-form.show { display: block; }
-  .error { font-size: 13px; color: #991b1b; margin-top: 8px; display: none; }
-  .error.show { display: block; }
-  .api-section { background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 16px; margin-bottom: 20px; }
-  .api-section h3 { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
-  .api-section p { font-size: 13px; color: #666; margin-bottom: 12px; }
+  .job-info .jtitle { font-size: 14px; font-weight: 500; }
+  .job-info .jco { font-size: 13px; color: #888; }
+  .sbadge { font-size: 11px; padding: 3px 8px; border-radius: 20px; font-weight: 500; }
+  .s-applied { background: #eff6ff; color: #1e40af; }
+  .s-screen { background: #fffbeb; color: #92400e; }
+  .s-interview { background: #f0fdf4; color: #166534; }
+  .s-rejected { background: #fef2f2; color: #991b1b; }
+  .s-offer { background: #fdf4ff; color: #7e22ce; }
+  .add-form { background: #f5f4f0; border-radius: 8px; padding: 16px; margin-bottom: 16px; display: none; }
+  .add-form.show { display: block; }
+  .errmsg { font-size: 13px; color: #991b1b; margin-top: 8px; display: none; }
+  .errmsg.show { display: block; }
+  .api-box { background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 16px; margin-bottom: 20px; }
+  .api-box h3 { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+  .api-box p { font-size: 13px; color: #666; margin-bottom: 12px; }
   .api-row { display: flex; gap: 8px; }
   .api-row input { flex: 1; }
-  .saved-badge { font-size: 12px; color: #166534; background: #f0fdf4; padding: 4px 10px; border-radius: 20px; display: none; }
-  .saved-badge.show { display: inline-block; }
+  .saved { font-size: 12px; color: #166534; background: #f0fdf4; padding: 4px 10px; border-radius: 20px; display: none; }
+  .saved.show { display: inline-block; }
   .italic { font-style: italic; }
+  .pitch-box { background: #f5f4f0; border-radius: 8px; padding: 14px; font-size: 14px; font-style: italic; line-height: 1.7; }
   @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } .tracker-grid { grid-template-columns: 1fr 1fr; } }
 </style>
 </head>
 <body>
-
 <div class="nav">
   <h1>Maria's Job Search Agent</h1>
   <span id="api-status">API key not set</span>
 </div>
-
 <div class="tabs">
   <button class="tab active" onclick="switchTab('fit')">Job fit analyzer</button>
   <button class="tab" onclick="switchTab('prep')">Interview prep</button>
@@ -114,7 +114,7 @@
 <div id="tab-fit" class="page active">
   <div class="card">
     <h2>Job fit analyzer</h2>
-    <p>Paste a job description and get an honest fit assessment, resume recommendation, and referral blurb.</p>
+    <p class="desc">Paste a job description and get an honest fit assessment, resume recommendation, and referral blurb.</p>
     <div class="form-group full" style="margin-bottom:12px;">
       <label>Job description (paste full text)</label>
       <textarea id="fit-jd" rows="8" placeholder="Paste the full job description here..."></textarea>
@@ -123,12 +123,12 @@
       <label>Referral contact (optional)</label>
       <input type="text" id="fit-contact" placeholder="e.g. Sarah Chen, former ClickUp colleague" />
     </div>
-    <div class="error" id="fit-error"></div>
+    <div class="errmsg" id="fit-err"></div>
     <div class="btn-row">
-      <button class="btn btn-primary" onclick="analyzeFit()">Analyze fit →</button>
+      <button class="btn btn-primary" id="fit-btn" onclick="analyzeFit()">Analyze fit</button>
       <button class="btn btn-secondary" onclick="clearFit()">Clear</button>
     </div>
-    <div class="loading" id="fit-loading"><div class="dots"><span></span><span></span><span></span></div><span id="fit-loading-text">Analyzing...</span></div>
+    <div class="loading" id="fit-load"><div class="dots"><span></span><span></span><span></span></div><span id="fit-load-txt">Analyzing...</span></div>
     <div class="result" id="fit-result"></div>
   </div>
 </div>
@@ -136,41 +136,29 @@
 <div id="tab-prep" class="page">
   <div class="card">
     <h2>Interview prep</h2>
-    <p>Enter the company and role and get a full prep guide for your conversation.</p>
+    <p class="desc">Enter the company and role and get a full prep guide for your conversation.</p>
     <div class="form-row">
-      <div class="form-group">
-        <label>Company</label>
-        <input type="text" id="prep-company" placeholder="e.g. Calendly" />
-      </div>
-      <div class="form-group">
-        <label>Role</label>
-        <input type="text" id="prep-role" placeholder="e.g. Senior Manager GTM Enablement" />
-      </div>
+      <div class="form-group"><label>Company</label><input type="text" id="prep-co" placeholder="e.g. Calendly" /></div>
+      <div class="form-group"><label>Role</label><input type="text" id="prep-role" placeholder="e.g. Senior Manager GTM Enablement" /></div>
       <div class="form-group">
         <label>Interview stage</label>
         <select id="prep-stage">
           <option value="hr">HR / recruiter screen</option>
-          <option value="hiring-manager">Hiring manager</option>
-          <option value="stakeholder">Stakeholder / panel</option>
-          <option value="case-study">Case study / presentation</option>
+          <option value="hm">Hiring manager</option>
+          <option value="panel">Stakeholder / panel</option>
+          <option value="case">Case study / presentation</option>
           <option value="final">Final round</option>
         </select>
       </div>
-      <div class="form-group">
-        <label>Interviewer name & title (optional)</label>
-        <input type="text" id="prep-interviewer" placeholder="e.g. Peter Zink, Director GTM Enablement" />
-      </div>
-      <div class="form-group full">
-        <label>Additional context (optional)</label>
-        <textarea id="prep-context" placeholder="e.g. They want someone to rebuild onboarding from scratch, MEDDPICC required, team of 2..."></textarea>
-      </div>
+      <div class="form-group"><label>Interviewer (optional)</label><input type="text" id="prep-interviewer" placeholder="e.g. Peter Zink, Director GTM Enablement" /></div>
+      <div class="form-group full"><label>Additional context (optional)</label><textarea id="prep-ctx" placeholder="e.g. They want someone to rebuild onboarding, MEDDPICC required..."></textarea></div>
     </div>
-    <div class="error" id="prep-error"></div>
+    <div class="errmsg" id="prep-err"></div>
     <div class="btn-row">
-      <button class="btn btn-primary" onclick="generatePrep()">Generate prep guide →</button>
+      <button class="btn btn-primary" id="prep-btn" onclick="generatePrep()">Generate prep guide</button>
       <button class="btn btn-secondary" onclick="clearPrep()">Clear</button>
     </div>
-    <div class="loading" id="prep-loading"><div class="dots"><span></span><span></span><span></span></div><span id="prep-loading-text">Building your prep guide...</span></div>
+    <div class="loading" id="prep-load"><div class="dots"><span></span><span></span><span></span></div><span id="prep-load-txt">Building your prep guide...</span></div>
     <div class="result" id="prep-result"></div>
   </div>
 </div>
@@ -178,10 +166,10 @@
 <div id="tab-tracker" class="page">
   <div class="card">
     <div class="tracker-grid" id="tracker-stats"></div>
-    <button class="btn btn-primary" onclick="toggleAddJob()" style="margin-bottom:12px;">+ Add application</button>
-    <div class="add-job-form" id="add-job-form">
+    <button class="btn btn-primary" onclick="toggleAdd()" style="margin-bottom:12px;">+ Add application</button>
+    <div class="add-form" id="add-form">
       <div class="form-row">
-        <div class="form-group"><label>Company</label><input type="text" id="tj-company" placeholder="e.g. Calendly" /></div>
+        <div class="form-group"><label>Company</label><input type="text" id="tj-co" placeholder="e.g. Calendly" /></div>
         <div class="form-group"><label>Role</label><input type="text" id="tj-role" placeholder="e.g. Senior Manager GTM Enablement" /></div>
         <div class="form-group">
           <label>Status</label>
@@ -197,7 +185,7 @@
       </div>
       <div class="btn-row">
         <button class="btn btn-primary" onclick="addJob()">Save</button>
-        <button class="btn btn-secondary" onclick="toggleAddJob()">Cancel</button>
+        <button class="btn btn-secondary" onclick="toggleAdd()">Cancel</button>
       </div>
     </div>
     <div id="job-list"></div>
@@ -207,242 +195,245 @@
 <div id="tab-settings" class="page">
   <div class="card">
     <h2>Settings</h2>
-    <p>Your API key is stored locally in your browser — it never leaves your device.</p>
-    <div class="api-section">
+    <p class="desc">Your API key is stored locally in your browser only.</p>
+    <div class="api-box">
       <h3>Anthropic API key</h3>
-      <p>Get your key at console.anthropic.com. You get free credits to start.</p>
+      <p>Get your key at console.anthropic.com.</p>
       <div class="api-row">
         <input type="password" id="api-key-input" placeholder="sk-ant-..." />
-        <button class="btn btn-primary" onclick="saveApiKey()">Save</button>
-        <span class="saved-badge" id="saved-badge">Saved!</span>
+        <button class="btn btn-primary" onclick="saveKey()">Save</button>
+        <span class="saved" id="saved-badge">Saved!</span>
       </div>
     </div>
-    <h2 style="margin-bottom:4px; margin-top:8px;">About this tool</h2>
-    <p style="font-size:13px; color:#666; line-height:1.6;">Built by Maria Wallace as a personal job search agent. Uses Claude AI to analyze job fit, generate interview prep, and track applications. This tool runs entirely in your browser — no data is sent anywhere except the Anthropic API to generate responses.</p>
+    <p style="font-size:13px;color:#666;line-height:1.6;">Built by Maria Wallace. Uses Claude AI to analyze job fit, generate interview prep, and track applications.</p>
   </div>
 </div>
 
 <script>
+const PROXY = 'https://maria-api-proxy.mariaewallace4.workers.dev';
+const MODEL = 'claude-haiku-4-5-20251001';
+
 const MARIA = `You are a job fit analyst and interview coach for Maria Wallace, a senior revenue enablement professional.
 
-IDENTITY & TARGET
-Location: Holly Springs, NC | Open to: remote or RDU hybrid
-Target comp: ~$180K | Target titles: Director/Senior Manager Sales Enablement, GTM Enablement Manager, Senior Enablement AI Specialist
-Ideal: SaaS, products she can use as end user, growth-stage to enterprise
+IDENTITY: Location: Holly Springs NC, remote or RDU hybrid, target comp ~$180K, target titles: Director/Senior Manager Sales Enablement, GTM Enablement Manager, Senior Enablement AI Specialist. Ideal: SaaS, products she can use as end user.
 
-CAREER (10+ years total, 8+ years dedicated enablement)
-ClickUp (Jan 2025–May 2026, RIF): Rebuilt commercial onboarding 40%→60% ramp rate, $10K→$25K+ first deal ARR, 9.7+ CSAT, AI agents saving 10hrs/cycle, AE Academy 100% promotion + Q1 attainment, vibe-coded HTML/GUI onboarding app with AI agents + manager portal, expanded to own PLGTM onboarding (CS, SEs, PS), led SKO SMB content (100+ attendees)
-Walmart Connect (Oct 2022–Jan 2025): 13% revenue increase from product training, led 4 facilitators, 300+ person org, Challenger methodology, StrengthsFinder workshop 300+, built first CMS 99% adoption
-Calm (Apr–Aug 2022, RIF): Stood up first enablement function, 30+ courses in 90 days
-Medallia (Jun 2021–Apr 2022): Founded Medallia University, $37M pipeline, 15% course completion increase, MEDDPICC + Command of the Message
-Valassis (Jan 2020–Jun 2021): Cut ramp time 13%, Diamond Award
-SAS Institute Training (Aug 2018–Jan 2020): Global onboarding, standardized curriculum
-SAS Institute AE (Feb 2016–Aug 2018): B2B SaaS quota carrier, 120% of quota 2017
-Frito-Lay (Jun 2012–Jan 2016): District Sales Manager, 17-person team, $10M+ district, 123rd→9th nationally
+CAREER (8+ years dedicated enablement):
+- ClickUp Jan2025-May2026 RIF: rebuilt commercial onboarding 40to60% ramp, $10K to $25K+ first deal ARR, 9.7+ CSAT, AI agents saving 10hrs/cycle, AE Academy 100% promotion + Q1 attainment, vibe-coded HTML/GUI onboarding app with AI agents + manager portal, expanded to own PLGTM onboarding (CS SEs PS), led SKO SMB content 100+ attendees
+- Walmart Connect Oct2022-Jan2025: 13% revenue increase from product training, led 4 facilitators, 300+ person org, Challenger methodology, StrengthsFinder 300+, built first CMS 99% adoption
+- Calm Apr-Aug2022 RIF: stood up first enablement function, 30+ courses in 90 days
+- Medallia Jun2021-Apr2022: founded Medallia University, $37M pipeline, 15% course completion increase, MEDDPICC + Command of Message
+- Valassis Jan2020-Jun2021: cut ramp time 13%, Diamond Award
+- SAS Institute Training Aug2018-Jan2020: global onboarding, standardized curriculum
+- SAS Institute AE Feb2016-Aug2018: B2B SaaS quota carrier, 120% quota 2017
+- Frito-Lay Jun2012-Jan2016: District Sales Manager, 17-person team, $10M+ district, 123rd to 9th nationally
 
-TOOLS: Articulate, Gong, WorkRamp, Mindtickle, Seismic, Salesforce, Outreach, ClickUp, Confluence, GSuite, Workday Learning (admin)
-METHODOLOGIES: MEDDPICC, Challenger Sale, Command of the Message, Value Selling, Force Management
-STRENGTHS: Builder, cross-functional leader, exceptional presenter, data-driven, AI-forward, fast executor, Spanish (conversational)
-GAPS: No formal direct reports in enablement (team lead experience), post-sales CS experience recent/limited`;
+TOOLS: Articulate, Gong, WorkRamp, Mindtickle, Seismic, Salesforce, Outreach, ClickUp, Confluence, GSuite, Workday Learning admin
+METHODOLOGIES: MEDDPICC, Challenger Sale, Command of Message, Value Selling, Force Management
+STRENGTHS: builder, cross-functional leader, exceptional presenter, data-driven, AI-forward, fast executor, Spanish conversational
+GAPS: no formal direct reports in enablement (team lead experience), post-sales CS experience recent/limited`;
 
-function getApiKey() { return localStorage.getItem('maria_api_key') || ''; }
-
-function saveApiKey() {
-  const key = document.getElementById('api-key-input').value.trim();
-  if (!key) return;
-  localStorage.setItem('maria_api_key', key);
+function getKey() { return localStorage.getItem('maria_key') || ''; }
+function saveKey() {
+  const k = document.getElementById('api-key-input').value.trim();
+  if (!k) return;
+  localStorage.setItem('maria_key', k);
   document.getElementById('saved-badge').classList.add('show');
   document.getElementById('api-status').textContent = 'API key saved';
   setTimeout(() => document.getElementById('saved-badge').classList.remove('show'), 2000);
 }
 
-function switchTab(name) {
-  document.querySelectorAll('.tab').forEach((t,i) => t.classList.remove('active'));
+function switchTab(n) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  const tabs = ['fit','prep','tracker','settings'];
-  const idx = tabs.indexOf(name);
+  const idx = ['fit','prep','tracker','settings'].indexOf(n);
   document.querySelectorAll('.tab')[idx].classList.add('active');
-  document.getElementById('tab-' + name).classList.add('active');
-  if (name === 'tracker') renderTracker();
+  document.getElementById('tab-'+n).classList.add('active');
+  if (n === 'tracker') renderTracker();
 }
 
-async function callClaude(prompt, loadingId, loadingTextEl, msgs) {
-  const key = getApiKey();
+async function callAPI(prompt, loadId, loadTxtId, msgs) {
+  const key = getKey();
   if (!key) { alert('Please add your Anthropic API key in Settings first.'); return null; }
-  document.getElementById(loadingId).classList.add('show');
+  document.getElementById(loadId).classList.add('show');
   let i = 0;
-  const interval = setInterval(() => { i=(i+1)%msgs.length; document.getElementById(loadingTextEl).textContent = msgs[i]; }, 2000);
+  const iv = setInterval(() => { i=(i+1)%msgs.length; document.getElementById(loadTxtId).textContent = msgs[i]; }, 2000);
   try {
-    const res = await fetch('https://maria-api-proxy.mariaewallace4.workers.dev', {
+    const res = await fetch(PROXY, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01' },
-      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 1500, system: MARIA, messages: [{ role: 'user', content: prompt }] })
+      body: JSON.stringify({ model: MODEL, max_tokens: 1500, system: MARIA, messages: [{ role: 'user', content: prompt }] })
     });
-    clearInterval(interval);
-    document.getElementById(loadingId).classList.remove('show');
+    clearInterval(iv);
+    document.getElementById(loadId).classList.remove('show');
     const data = await res.json();
     if (data.error) { alert('API error: ' + data.error.message); return null; }
     return data.content?.map(b => b.text||'').join('').trim();
   } catch(e) {
-    clearInterval(interval);
-    document.getElementById(loadingId).classList.remove('show');
-    alert('Something went wrong. Check your API key and try again.');
+    clearInterval(iv);
+    document.getElementById(loadId).classList.remove('show');
+    alert('Something went wrong: ' + e.message);
     return null;
   }
+}
+
+function parseJSON(text) {
+  let clean = text.replace(/```json|```/g,'').trim();
+  const a = clean.indexOf('{'), b = clean.lastIndexOf('}');
+  if (a !== -1 && b !== -1) clean = clean.slice(a, b+1);
+  return JSON.parse(clean);
+}
+
+function ql(arr) {
+  if (!arr || !arr.length) return '';
+  return '<ul class="ql">' + arr.map(s => '<li>' + (typeof s === 'object' ? JSON.stringify(s) : s) + '</li>').join('') + '</ul>';
+}
+
+function renderStories(arr) {
+  if (!arr || !arr.length) return '';
+  return arr.map(s => {
+    if (typeof s === 'object' && s !== null) {
+      return '<div class="story-block"><div class="story-title">' + (s.title||'') + '</div><div class="story-text">' + (s.narrative||s.description||'') + '</div>' + (s.stat ? '<span class="story-stat">' + s.stat + '</span>' : '') + '</div>';
+    }
+    return '<div class="story-block"><div class="story-text">' + s + '</div></div>';
+  }).join('');
 }
 
 async function analyzeFit() {
   const jd = document.getElementById('fit-jd').value.trim();
   const contact = document.getElementById('fit-contact').value.trim();
-  const err = document.getElementById('fit-error');
-  if (!jd) { err.textContent = 'Please paste a job description.'; err.classList.add('show'); return; }
+  const err = document.getElementById('fit-err');
+  if (!jd) { err.textContent='Please paste a job description.'; err.classList.add('show'); return; }
   err.classList.remove('show');
-  const prompt = `Analyze this job description for fit with Maria Wallace${contact ? '. Referral contact: ' + contact : ''}.
+  document.getElementById('fit-btn').disabled = true;
 
-JD:
-${jd}
+  const prompt = 'Analyze this job for Maria Wallace' + (contact ? ', referral contact: ' + contact : '') + '. JD:\n' + jd + '\n\nRespond with raw JSON only, no markdown fences:\n{"role_title":"...","company":"...","fit_score":7,"verdict":"Apply","verdict_reason":"one sentence","strengths":"2-3 sentences","gaps":"1-2 sentences","resume_recommendation":"one paragraph","comp_note":"one sentence","referral_blurb":"3-4 sentences first person from colleague"}';
 
-Respond with raw JSON only, no markdown:
-{"role_title":"...","company":"...","fit_score":7,"verdict":"Apply","verdict_reason":"one sentence","strengths":"2-3 sentences","gaps":"1-2 sentences or No significant gaps","resume_recommendation":"which resume version and any tweaks","comp_note":"one sentence on comp alignment or Range not listed","referral_blurb":"3-4 sentence first-person blurb from a colleague${contact ? ' — written as if from ' + contact : ''}"}`;
-
-  const text = await callClaude(prompt, 'fit-loading', 'fit-loading-text', ['Analyzing the role...','Comparing against your background...','Assessing fit and gaps...','Almost done...']);
+  const text = await callAPI(prompt, 'fit-load', 'fit-load-txt', ['Analyzing the role...','Comparing your background...','Assessing fit and gaps...','Almost done...']);
+  document.getElementById('fit-btn').disabled = false;
   if (!text) return;
+
   try {
-    const d = JSON.parse(text.replace(/```json|```/g,'').trim());
-    const score = d.fit_score;
-    const sc = score>=7?'score-high':score>=5?'score-mid':'score-low';
-    const vc = d.verdict.toLowerCase().includes('apply')?'verdict-apply':d.verdict==='Pass'?'verdict-pass':'verdict-maybe';
-    document.getElementById('fit-result').innerHTML = `
-      <div class="result-card">
-        <div class="score-row">
-          <div class="score-circle ${sc}">${score}/10</div>
-          <div class="score-meta"><h3>${d.role_title||''}${d.company?' · '+d.company:''}</h3><p class="${vc}">${d.verdict} — ${d.verdict_reason}</p></div>
-        </div>
-        <div class="result-section"><div class="section-title">Where you fit</div><div class="section-body">${d.strengths}</div></div>
-        <hr class="divider">
-        <div class="result-section"><div class="section-title">Honest gaps</div><div class="section-body">${d.gaps}</div></div>
-        <hr class="divider">
-        <div class="result-section"><div class="section-title">Resume recommendation</div><div class="section-body">${d.resume_recommendation}</div></div>
-        <hr class="divider">
-        <div class="result-section"><div class="section-title">Comp alignment</div><div class="section-body">${d.comp_note}</div></div>
-        ${d.referral_blurb?`<hr class="divider"><div class="result-section"><div class="section-title">Referral blurb</div><div class="section-body italic">"${d.referral_blurb}"</div></div>`:''}
-      </div>`;
+    const d = parseJSON(text);
+    const sc = d.fit_score >= 7 ? 'score-high' : d.fit_score >= 5 ? 'score-mid' : 'score-low';
+    const vc = d.verdict && d.verdict.toLowerCase().includes('apply') ? 'verdict-apply' : d.verdict === 'Pass' ? 'verdict-pass' : 'verdict-maybe';
+    document.getElementById('fit-result').innerHTML =
+      '<div class="result-card">' +
+        '<div class="score-row"><div class="score-circle ' + sc + '">' + d.fit_score + '/10</div>' +
+        '<div class="score-meta"><h3>' + (d.role_title||'') + (d.company ? ' · ' + d.company : '') + '</h3>' +
+        '<p class="' + vc + '">' + (d.verdict||'') + ' — ' + (d.verdict_reason||'') + '</p></div></div>' +
+        '<div class="rsec"><div class="rtitle">Where you fit</div><div class="rbody">' + (d.strengths||'') + '</div></div><hr class="divider">' +
+        '<div class="rsec"><div class="rtitle">Honest gaps</div><div class="rbody">' + (d.gaps||'') + '</div></div><hr class="divider">' +
+        '<div class="rsec"><div class="rtitle">Resume recommendation</div><div class="rbody">' + (d.resume_recommendation||'') + '</div></div><hr class="divider">' +
+        '<div class="rsec"><div class="rtitle">Comp alignment</div><div class="rbody">' + (d.comp_note||'') + '</div></div>' +
+        (d.referral_blurb ? '<hr class="divider"><div class="rsec"><div class="rtitle">Referral blurb</div><div class="rbody italic">"' + d.referral_blurb + '"</div></div>' : '') +
+      '</div>';
     document.getElementById('fit-result').classList.add('show');
   } catch(e) {
-    document.getElementById('fit-result').innerHTML = `<div class="result-card"><p style="font-size:14px;">${text}</p></div>`;
+    document.getElementById('fit-result').innerHTML = '<div class="result-card"><pre style="font-size:12px;white-space:pre-wrap;overflow-x:auto;">' + text + '</pre></div>';
     document.getElementById('fit-result').classList.add('show');
   }
 }
 
 function clearFit() {
-  document.getElementById('fit-jd').value='';
-  document.getElementById('fit-contact').value='';
+  document.getElementById('fit-jd').value = '';
+  document.getElementById('fit-contact').value = '';
   document.getElementById('fit-result').classList.remove('show');
-  document.getElementById('fit-error').classList.remove('show');
+  document.getElementById('fit-err').classList.remove('show');
 }
 
 async function generatePrep() {
-  const company = document.getElementById('prep-company').value.trim();
+  const co = document.getElementById('prep-co').value.trim();
   const role = document.getElementById('prep-role').value.trim();
+  const err = document.getElementById('prep-err');
+  if (!co || !role) { err.textContent='Please enter company and role.'; err.classList.add('show'); return; }
+  err.classList.remove('show');
+  document.getElementById('prep-btn').disabled = true;
+
+  const stageMap = {hr:'HR/recruiter screen',hm:'hiring manager interview',panel:'stakeholder/panel interview',case:'case study presentation',final:'final round interview'};
   const stage = document.getElementById('prep-stage').value;
   const interviewer = document.getElementById('prep-interviewer').value.trim();
-  const context = document.getElementById('prep-context').value.trim();
-  const err = document.getElementById('prep-error');
-  if (!company || !role) { err.textContent='Please enter company and role.'; err.classList.add('show'); return; }
-  err.classList.remove('show');
-  const stageLabels = {'hr':'HR/recruiter screen','hiring-manager':'hiring manager interview','stakeholder':'stakeholder/panel interview','case-study':'case study presentation','final':'final round interview'};
-  const prompt = `Generate a complete interview prep guide for Maria Wallace for a ${stageLabels[stage]} at ${company} for the ${role} role.${interviewer?' Interviewer: '+interviewer+'.':''}${context?' Additional context: '+context:''}
+  const ctx = document.getElementById('prep-ctx').value.trim();
 
-Respond with raw JSON only:
-{"company_overview":"2-3 sentences about the company and what makes it relevant to Maria","why_maria_fits":"3-4 sentences on why Maria is a strong candidate for this specific role","likely_questions":["6-8 likely interview questions for this stage and role"],"best_stories":["3-4 of Maria's strongest stories/examples to use, with the specific stat or outcome"],"comp_talking_points":"how Maria should handle comp discussion for this role","questions_to_ask":["4-5 strong questions Maria should ask in this interview"],"watch_outs":"1-2 things to be careful about or prepare for","opening_pitch":"A natural 3-4 sentence answer to tell me about yourself tailored to this specific role"}`;
+  const prompt = 'Generate a complete interview prep guide for Maria Wallace for a ' + stageMap[stage] + ' at ' + co + ' for the ' + role + ' role.' + (interviewer ? ' Interviewer: ' + interviewer + '.' : '') + (ctx ? ' Context: ' + ctx : '') + '\n\nRespond with raw JSON only, no markdown fences:\n{"company_overview":"2-3 sentences","why_maria_fits":"3-4 sentences","opening_pitch":"3-4 sentence tell me about yourself","likely_questions":["6-8 questions"],"best_stories":["3-4 stories as plain strings with the stat included"],"comp_talking_points":"one paragraph","questions_to_ask":["4-5 questions"],"watch_outs":"1-2 sentences"}';
 
-  const text = await callClaude(prompt, 'prep-loading', 'prep-loading-text', ['Researching the company...','Mapping your experience to the role...','Crafting your stories...','Building your prep guide...']);
+  const text = await callAPI(prompt, 'prep-load', 'prep-load-txt', ['Researching the company...','Mapping your experience...','Crafting your stories...','Building your prep guide...']);
+  document.getElementById('prep-btn').disabled = false;
   if (!text) return;
+
   try {
-    let clean = text.replace(/```json|```/g,'').trim();
-    const firstBrace = clean.indexOf('{');
-    const lastBrace = clean.lastIndexOf('}');
-    if (firstBrace !== -1 && lastBrace !== -1) clean = clean.slice(firstBrace, lastBrace + 1);
-    const d = JSON.parse(clean);
-    document.getElementById('prep-result').innerHTML = `
-      <div class="result-card">
-        <div class="result-section"><div class="section-title">Company context</div><div class="section-body">${d.company_overview||''}</div></div>
-        <hr class="divider">
-        <div class="result-section"><div class="section-title">Why you fit</div><div class="section-body">${d.why_maria_fits||''}</div></div>
-        <hr class="divider">
-        <div class="result-section"><div class="section-title">Your opening pitch</div><div class="section-body italic">"${d.opening_pitch||''}"</div></div>
-        <hr class="divider">
-        <div class="result-section"><div class="section-title">Likely questions</div><ul class="q-list">${(d.likely_questions||[]).map(q=>`<li>${q}</li>`).join('')}</ul></div>
-        <hr class="divider">
-        <div class="result-section"><div class="section-title">Your best stories</div><ul class="q-list">${(d.best_stories||[]).map(s=>`<li>${typeof s==='object'?s.title+' — '+s.narrative+(s.stat?' ('+s.stat+')':''):s}</li>`).join('')}</ul></div>
-        <hr class="divider">
-        <div class="result-section"><div class="section-title">Comp talking points</div><div class="section-body">${d.comp_talking_points||''}</div></div>
-        <hr class="divider">
-        <div class="result-section"><div class="section-title">Questions to ask</div><ul class="q-list">${(d.questions_to_ask||[]).map(q=>`<li>${q}</li>`).join('')}</ul></div>
-        <hr class="divider">
-        <div class="result-section"><div class="section-title">Watch outs</div><div class="section-body">${d.watch_outs||''}</div></div>
-      </div>`;
+    const d = parseJSON(text);
+    document.getElementById('prep-result').innerHTML =
+      '<div class="result-card">' +
+        '<div class="rsec"><div class="rtitle">Company context</div><div class="rbody">' + (d.company_overview||'') + '</div></div><hr class="divider">' +
+        '<div class="rsec"><div class="rtitle">Why you fit</div><div class="rbody">' + (d.why_maria_fits||'') + '</div></div><hr class="divider">' +
+        '<div class="rsec"><div class="rtitle">Your opening pitch</div><div class="pitch-box">"' + (d.opening_pitch||'') + '"</div></div><hr class="divider">' +
+        '<div class="rsec"><div class="rtitle">Likely questions</div>' + ql(d.likely_questions) + '</div><hr class="divider">' +
+        '<div class="rsec"><div class="rtitle">Your best stories</div>' + ql(d.best_stories) + '</div><hr class="divider">' +
+        '<div class="rsec"><div class="rtitle">Comp talking points</div><div class="rbody">' + (d.comp_talking_points||'') + '</div></div><hr class="divider">' +
+        '<div class="rsec"><div class="rtitle">Questions to ask</div>' + ql(d.questions_to_ask) + '</div><hr class="divider">' +
+        '<div class="rsec"><div class="rtitle">Watch outs</div><div class="rbody">' + (d.watch_outs||'') + '</div></div>' +
+      '</div>';
     document.getElementById('prep-result').classList.add('show');
   } catch(e) {
-    document.getElementById('prep-result').innerHTML = `<div class="result-card"><p style="font-size:14px; white-space:pre-wrap;">${text}</p></div>`;
+    document.getElementById('prep-result').innerHTML = '<div class="result-card"><pre style="font-size:12px;white-space:pre-wrap;overflow-x:auto;">' + text + '</pre></div>';
     document.getElementById('prep-result').classList.add('show');
   }
 }
 
 function clearPrep() {
-  ['prep-company','prep-role','prep-interviewer','prep-context'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('prep-stage').value='hr';
+  ['prep-co','prep-role','prep-interviewer','prep-ctx'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('prep-stage').value = 'hr';
   document.getElementById('prep-result').classList.remove('show');
-  document.getElementById('prep-error').classList.remove('show');
+  document.getElementById('prep-err').classList.remove('show');
 }
 
-function getJobs() { try { return JSON.parse(localStorage.getItem('maria_jobs')||'[]'); } catch(e){return[];} }
-function saveJobs(jobs) { localStorage.setItem('maria_jobs', JSON.stringify(jobs)); }
+function getJobs() { try { return JSON.parse(localStorage.getItem('maria_jobs')||'[]'); } catch(e) { return []; } }
+function saveJobs(j) { localStorage.setItem('maria_jobs', JSON.stringify(j)); }
 
 function renderTracker() {
   const jobs = getJobs();
-  const counts = {applied:0,screen:0,interview:0,rejected:0,offer:0};
-  jobs.forEach(j=>counts[j.status]=(counts[j.status]||0)+1);
-  document.getElementById('tracker-stats').innerHTML = `
-    <div class="stat-card"><div class="num">${jobs.length}</div><div class="lbl">Total applications</div></div>
-    <div class="stat-card"><div class="num">${counts.screen+counts.interview}</div><div class="lbl">Active conversations</div></div>
-    <div class="stat-card"><div class="num">${counts.interview}</div><div class="lbl">Interviewing</div></div>
-    <div class="stat-card"><div class="num">${counts.offer}</div><div class="lbl">Offers</div></div>`;
-  const statusLabels = {applied:'Applied',screen:'Phone screen',interview:'Interviewing',rejected:'Rejected',offer:'Offer'};
+  const c = {applied:0,screen:0,interview:0,rejected:0,offer:0};
+  jobs.forEach(j => { c[j.status] = (c[j.status]||0) + 1; });
+  document.getElementById('tracker-stats').innerHTML =
+    '<div class="stat-card"><div class="num">' + jobs.length + '</div><div class="lbl">Total applied</div></div>' +
+    '<div class="stat-card"><div class="num">' + (c.screen+c.interview) + '</div><div class="lbl">Active conversations</div></div>' +
+    '<div class="stat-card"><div class="num">' + c.interview + '</div><div class="lbl">Interviewing</div></div>' +
+    '<div class="stat-card"><div class="num">' + c.offer + '</div><div class="lbl">Offers</div></div>';
+  const sl = {applied:'Applied',screen:'Phone screen',interview:'Interviewing',rejected:'Rejected',offer:'Offer'};
   document.getElementById('job-list').innerHTML = jobs.length === 0
-    ? '<p style="font-size:14px;color:#888;padding:16px 0;">No applications yet. Add your first one above.</p>'
-    : jobs.map((j,i)=>`
-      <div class="job-row">
-        <div class="job-info"><div class="title">${j.role}</div><div class="company">${j.company}${j.notes?' · '+j.notes:''}</div></div>
-        <span class="status-badge status-${j.status}">${statusLabels[j.status]}</span>
-        <select onchange="updateStatus(${i}, this.value)" style="font-size:12px;padding:4px 8px;border-radius:6px;border:1px solid #e5e5e5;background:white;">
-          ${Object.entries(statusLabels).map(([v,l])=>`<option value="${v}"${j.status===v?' selected':''}>${l}</option>`).join('')}
-        </select>
-        <button onclick="removeJob(${i})" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:18px;padding:0 4px;">×</button>
-      </div>`).join('');
+    ? '<p style="font-size:14px;color:#888;padding:16px 0;">No applications yet.</p>'
+    : jobs.map((j,i) =>
+        '<div class="job-row">' +
+        '<div class="job-info"><div class="jtitle">' + j.role + '</div><div class="jco">' + j.company + (j.notes?' · '+j.notes:'') + '</div></div>' +
+        '<span class="sbadge s-' + j.status + '">' + sl[j.status] + '</span>' +
+        '<select onchange="updateStatus(' + i + ',this.value)" style="font-size:12px;padding:4px 8px;border-radius:6px;border:1px solid #e5e5e5;background:white;">' +
+        Object.entries(sl).map(([v,l]) => '<option value="' + v + '"' + (j.status===v?' selected':'') + '>' + l + '</option>').join('') +
+        '</select>' +
+        '<button onclick="removeJob(' + i + ')" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:18px;">x</button>' +
+        '</div>'
+      ).join('');
 }
 
-function toggleAddJob() { document.getElementById('add-job-form').classList.toggle('show'); }
+function toggleAdd() { document.getElementById('add-form').classList.toggle('show'); }
 
 function addJob() {
-  const company = document.getElementById('tj-company').value.trim();
+  const co = document.getElementById('tj-co').value.trim();
   const role = document.getElementById('tj-role').value.trim();
-  if (!company || !role) { alert('Please enter company and role.'); return; }
+  if (!co || !role) { alert('Please enter company and role.'); return; }
   const jobs = getJobs();
-  jobs.unshift({ company, role, status: document.getElementById('tj-status').value, notes: document.getElementById('tj-notes').value.trim(), date: new Date().toISOString().split('T')[0] });
+  jobs.unshift({ company: co, role, status: document.getElementById('tj-status').value, notes: document.getElementById('tj-notes').value.trim(), date: new Date().toISOString().split('T')[0] });
   saveJobs(jobs);
-  ['tj-company','tj-role','tj-notes'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('tj-status').value='applied';
-  document.getElementById('add-job-form').classList.remove('show');
+  ['tj-co','tj-role','tj-notes'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('tj-status').value = 'applied';
+  document.getElementById('add-form').classList.remove('show');
   renderTracker();
 }
 
-function updateStatus(i, status) { const jobs=getJobs(); jobs[i].status=status; saveJobs(jobs); renderTracker(); }
-function removeJob(i) { if(!confirm('Remove this application?')) return; const jobs=getJobs(); jobs.splice(i,1); saveJobs(jobs); renderTracker(); }
+function updateStatus(i, s) { const j=getJobs(); j[i].status=s; saveJobs(j); renderTracker(); }
+function removeJob(i) { if(!confirm('Remove?')) return; const j=getJobs(); j.splice(i,1); saveJobs(j); renderTracker(); }
 
-const key = getApiKey();
-if (key) document.getElementById('api-status').textContent = 'API key saved';
-document.getElementById('api-key-input').value = key;
+const k = getKey();
+if (k) { document.getElementById('api-status').textContent='API key saved'; document.getElementById('api-key-input').value=k; }
 renderTracker();
 </script>
 </body>
