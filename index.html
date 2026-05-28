@@ -308,29 +308,36 @@ Respond with raw JSON only, no markdown:
   const text = await callClaude(prompt, 'fit-loading', 'fit-loading-text', ['Analyzing the role...','Comparing against your background...','Assessing fit and gaps...','Almost done...']);
   if (!text) return;
   try {
-    const d = JSON.parse(text.replace(/```json|```/g,'').trim());
-    const score = d.fit_score;
-    const sc = score>=7?'score-high':score>=5?'score-mid':'score-low';
-    const vc = d.verdict.toLowerCase().includes('apply')?'verdict-apply':d.verdict==='Pass'?'verdict-pass':'verdict-maybe';
-    document.getElementById('fit-result').innerHTML = `
+    try {
+    let clean = text.replace(/```json|```/g,'').trim();
+    const firstBrace = clean.indexOf('{');
+    const lastBrace = clean.lastIndexOf('}');
+    if (firstBrace !== -1 && lastBrace !== -1) {
+      clean = clean.slice(firstBrace, lastBrace + 1);
+    }
+    const d = JSON.parse(clean);
+    document.getElementById('prep-result').innerHTML = `
       <div class="result-card">
-        <div class="score-row">
-          <div class="score-circle ${sc}">${score}/10</div>
-          <div class="score-meta"><h3>${d.role_title||''}${d.company?' · '+d.company:''}</h3><p class="${vc}">${d.verdict} — ${d.verdict_reason}</p></div>
-        </div>
-        <div class="result-section"><div class="section-title">Where you fit</div><div class="section-body">${d.strengths}</div></div>
+        <div class="result-section"><div class="section-title">Company context</div><div class="section-body">${d.company_overview||''}</div></div>
         <hr class="divider">
-        <div class="result-section"><div class="section-title">Honest gaps</div><div class="section-body">${d.gaps}</div></div>
+        <div class="result-section"><div class="section-title">Why you fit</div><div class="section-body">${d.why_maria_fits||''}</div></div>
         <hr class="divider">
-        <div class="result-section"><div class="section-title">Resume recommendation</div><div class="section-body">${d.resume_recommendation}</div></div>
+        <div class="result-section"><div class="section-title">Your opening pitch</div><div class="section-body italic">"${d.opening_pitch||''}"</div></div>
         <hr class="divider">
-        <div class="result-section"><div class="section-title">Comp alignment</div><div class="section-body">${d.comp_note}</div></div>
-        ${d.referral_blurb?`<hr class="divider"><div class="result-section"><div class="section-title">Referral blurb</div><div class="section-body italic">"${d.referral_blurb}"</div></div>`:''}
+        <div class="result-section"><div class="section-title">Likely questions</div><ul class="q-list">${(d.likely_questions||[]).map(q=>`<li>${q}</li>`).join('')}</ul></div>
+        <hr class="divider">
+        <div class="result-section"><div class="section-title">Your best stories</div><ul class="q-list">${(d.best_stories||[]).map(s=>`<li>${typeof s==='object'?`<strong>${s.title}</strong> — ${s.narrative} <em>${s.stat||''}</em>`:s}</li>`).join('')}</ul></div>
+        <hr class="divider">
+        <div class="result-section"><div class="section-title">Comp talking points</div><div class="section-body">${d.comp_talking_points||''}</div></div>
+        <hr class="divider">
+        <div class="result-section"><div class="section-title">Questions to ask</div><ul class="q-list">${(d.questions_to_ask||[]).map(q=>`<li>${q}</li>`).join('')}</ul></div>
+        <hr class="divider">
+        <div class="result-section"><div class="section-title">Watch outs</div><div class="section-body">${d.watch_outs||''}</div></div>
       </div>`;
-    document.getElementById('fit-result').classList.add('show');
+    document.getElementById('prep-result').classList.add('show');
   } catch(e) {
-    document.getElementById('fit-result').innerHTML = `<div class="result-card"><p style="font-size:14px;">${text}</p></div>`;
-    document.getElementById('fit-result').classList.add('show');
+    document.getElementById('prep-result').innerHTML = `<div class="result-card"><p style="font-size:14px; white-space:pre-wrap;">${text}</p></div>`;
+    document.getElementById('prep-result').classList.add('show');
   }
 }
 
