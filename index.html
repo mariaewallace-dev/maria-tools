@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maria's Job Search Agent</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f4f0; color: #1a1a1a; min-height: 100vh; }
+  .nav { background: #1a1a1a; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; }
+  .nav h1 { color: white; font-size: 16px; font-weight: 500; }
+  .nav span { color: #888; font-size: 13px; }
+  .tabs { display: flex; gap: 4px; padding: 16px 24px 0; background: white; border-bottom: 1px solid #e5e5e5; }
+  .tab { padding: 10px 20px; font-size: 14px; cursor: pointer; border: none; background: none; color: #888; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .tab.active { color: #1a1a1a; border-bottom-color: #1a1a1a; font-weight: 500; }
+  .tab:hover:not(.active) { color: #555; }
+  .page { display: none; padding: 24px; max-width: 800px; margin: 0 auto; }
+  .page.active { display: block; }
+  .card { background: white; border-radius: 12px; border: 1px solid #e5e5e5; padding: 20px; margin-bottom: 16px; }
+  .card h2 { font-size: 16px; font-weight: 500; margin-bottom: 4px; }
+  .card p { font-size: 13px; color: #888; margin-bottom: 16px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group.full { grid-column: 1 / -1; }
+  label { font-size: 13px; color: #666; }
+  input, select, textarea { width: 100%; padding: 8px 12px; border: 1px solid #e5e5e5; border-radius: 8px; font-size: 14px; font-family: inherit; outline: none; background: white; color: #1a1a1a; }
+  input:focus, select:focus, textarea:focus { border-color: #1a1a1a; }
+  textarea { min-height: 80px; resize: vertical; }
+  .btn { padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; border: none; }
+  .btn-primary { background: #1a1a1a; color: white; }
+  .btn-primary:hover { background: #333; }
+  .btn-primary:disabled { background: #ccc; cursor: not-allowed; }
+  .btn-secondary { background: white; color: #1a1a1a; border: 1px solid #e5e5e5; }
+  .btn-secondary:hover { background: #f5f4f0; }
+  .btn-row { display: flex; gap: 8px; margin-top: 4px; }
+  .loading { display: none; align-items: center; gap: 10px; padding: 16px; background: #f5f4f0; border-radius: 8px; margin-top: 16px; font-size: 14px; color: #888; }
+  .loading.show { display: flex; }
+  .dots { display: flex; gap: 4px; }
+  .dots span { width: 6px; height: 6px; border-radius: 50%; background: #888; animation: pulse 1.2s ease-in-out infinite; }
+  .dots span:nth-child(2) { animation-delay: 0.2s; }
+  .dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes pulse { 0%,80%,100%{opacity:0.2} 40%{opacity:1} }
+  .result { display: none; margin-top: 16px; }
+  .result.show { display: block; }
+  .result-card { background: white; border-radius: 12px; border: 1px solid #e5e5e5; padding: 20px; margin-bottom: 12px; }
+  .result-section { margin-bottom: 16px; }
+  .result-section:last-child { margin-bottom: 0; }
+  .section-title { font-size: 11px; font-weight: 500; color: #888; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+  .section-body { font-size: 14px; line-height: 1.6; color: #1a1a1a; }
+  .pill-row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pill { font-size: 12px; padding: 4px 10px; border-radius: 20px; background: #f5f4f0; color: #555; border: 1px solid #e5e5e5; }
+  .pill.red { background: #fef2f2; color: #991b1b; border-color: #fecaca; }
+  .pill.green { background: #f0fdf4; color: #166534; border-color: #bbf7d0; }
+  .pill.blue { background: #eff6ff; color: #1e40af; border-color: #bfdbfe; }
+  .score-row { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #e5e5e5; }
+  .score-circle { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 500; flex-shrink: 0; }
+  .score-high { background: #f0fdf4; color: #166534; }
+  .score-mid { background: #fffbeb; color: #92400e; }
+  .score-low { background: #fef2f2; color: #991b1b; }
+  .score-meta h3 { font-size: 15px; font-weight: 500; margin-bottom: 2px; }
+  .score-meta p { font-size: 13px; color: #888; }
+  .verdict-apply { color: #166534; font-weight: 500; }
+  .verdict-pass { color: #991b1b; font-weight: 500; }
+  .verdict-maybe { color: #92400e; font-weight: 500; }
+  .q-list { list-style: none; }
+  .q-list li { padding: 8px 0; border-bottom: 1px solid #f0f0f0; font-size: 14px; display: flex; gap: 8px; line-height: 1.5; }
+  .q-list li:last-child { border-bottom: none; }
+  .q-list li::before { content: "→"; color: #888; flex-shrink: 0; margin-top: 1px; }
+  .divider { border: none; border-top: 1px solid #f0f0f0; margin: 16px 0; }
+  .tracker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .stat-card { background: #f5f4f0; border-radius: 8px; padding: 16px; }
+  .stat-card .num { font-size: 28px; font-weight: 500; }
+  .stat-card .lbl { font-size: 12px; color: #888; margin-top: 2px; }
+  .job-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
+  .job-row:last-child { border-bottom: none; }
+  .job-info { flex: 1; }
+  .job-info .title { font-size: 14px; font-weight: 500; }
+  .job-info .company { font-size: 13px; color: #888; }
+  .status-badge { font-size: 11px; padding: 3px 8px; border-radius: 20px; font-weight: 500; }
+  .status-applied { background: #eff6ff; color: #1e40af; }
+  .status-screen { background: #fffbeb; color: #92400e; }
+  .status-interview { background: #f0fdf4; color: #166534; }
+  .status-rejected { background: #fef2f2; color: #991b1b; }
+  .status-offer { background: #fdf4ff; color: #7e22ce; }
+  .add-job-form { background: #f5f4f0; border-radius: 8px; padding: 16px; margin-bottom: 16px; display: none; }
+  .add-job-form.show { display: block; }
+  .error { font-size: 13px; color: #991b1b; margin-top: 8px; display: none; }
+  .error.show { display: block; }
+  .api-section { background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 16px; margin-bottom: 20px; }
+  .api-section h3 { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+  .api-section p { font-size: 13px; color: #666; margin-bottom: 12px; }
+  .api-row { display: flex; gap: 8px; }
+  .api-row input { flex: 1; }
+  .saved-badge { font-size: 12px; color: #166534; background: #f0fdf4; padding: 4px 10px; border-radius: 20px; display: none; }
+  .saved-badge.show { display: inline-block; }
+  .italic { font-style: italic; }
+  @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } .tracker-grid { grid-template-columns: 1fr 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <h1>Maria's Job Search Agent</h1>
+  <span id="api-status">API key not set</span>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('fit')">Job fit analyzer</button>
+  <button class="tab" onclick="switchTab('prep')">Interview prep</button>
+  <button class="tab" onclick="switchTab('tracker')">Application tracker</button>
+  <button class="tab" onclick="switchTab('settings')">Settings</button>
+</div>
+
+<div id="tab-fit" class="page active">
+  <div class="card">
+    <h2>Job fit analyzer</h2>
+    <p>Paste a job description and get an honest fit assessment, resume recommendation, and referral blurb.</p>
+    <div class="form-group full" style="margin-bottom:12px;">
+      <label>Job description (paste full text)</label>
+      <textarea id="fit-jd" rows="8" placeholder="Paste the full job description here..."></textarea>
+    </div>
+    <div class="form-group full" style="margin-bottom:12px;">
+      <label>Referral contact (optional)</label>
+      <input type="text" id="fit-contact" placeholder="e.g. Sarah Chen, former ClickUp colleague" />
+    </div>
+    <div class="error" id="fit-error"></div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="analyzeFit()">Analyze fit →</button>
+      <button class="btn btn-secondary" onclick="clearFit()">Clear</button>
+    </div>
+    <div class="loading" id="fit-loading"><div class="dots"><span></span><span></span><span></span></div><span id="fit-loading-text">Analyzing...</span></div>
+    <div class="result" id="fit-result"></div>
+  </div>
+</div>
+
+<div id="tab-prep" class="page">
+  <div class="card">
+    <h2>Interview prep</h2>
+    <p>Enter the company and role and get a full prep guide for your conversation.</p>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Company</label>
+        <input type="text" id="prep-company" placeholder="e.g. Calendly" />
+      </div>
+      <div class="form-group">
+        <label>Role</label>
+        <input type="text" id="prep-role" placeholder="e.g. Senior Manager GTM Enablement" />
+      </div>
+      <div class="form-group">
+        <label>Interview stage</label>
+        <select id="prep-stage">
+          <option value="hr">HR / recruiter screen</option>
+          <option value="hiring-manager">Hiring manager</option>
+          <option value="stakeholder">Stakeholder / panel</option>
+          <option value="case-study">Case study / presentation</option>
+          <option value="final">Final round</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Interviewer name & title (optional)</label>
+        <input type="text" id="prep-interviewer" placeholder="e.g. Peter Zink, Director GTM Enablement" />
+      </div>
+      <div class="form-group full">
+        <label>Additional context (optional)</label>
+        <textarea id="prep-context" placeholder="e.g. They want someone to rebuild onboarding from scratch, MEDDPICC required, team of 2..."></textarea>
+      </div>
+    </div>
+    <div class="error" id="prep-error"></div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="generatePrep()">Generate prep guide →</button>
+      <button class="btn btn-secondary" onclick="clearPrep()">Clear</button>
+    </div>
+    <div class="loading" id="prep-loading"><div class="dots"><span></span><span></span><span></span></div><span id="prep-loading-text">Building your prep guide...</span></div>
+    <div class="result" id="prep-result"></div>
+  </div>
+</div>
+
+<div id="tab-tracker" class="page">
+  <div class="card">
+    <div class="tracker-grid" id="tracker-stats"></div>
+    <button class="btn btn-primary" onclick="toggleAddJob()" style="margin-bottom:12px;">+ Add application</button>
+    <div class="add-job-form" id="add-job-form">
+      <div class="form-row">
+        <div class="form-group"><label>Company</label><input type="text" id="tj-company" placeholder="e.g. Calendly" /></div>
+        <div class="form-group"><label>Role</label><input type="text" id="tj-role" placeholder="e.g. Senior Manager GTM Enablement" /></div>
+        <div class="form-group">
+          <label>Status</label>
+          <select id="tj-status">
+            <option value="applied">Applied</option>
+            <option value="screen">Phone screen</option>
+            <option value="interview">Interviewing</option>
+            <option value="rejected">Rejected</option>
+            <option value="offer">Offer</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Notes (optional)</label><input type="text" id="tj-notes" placeholder="e.g. Warm intro from Laura" /></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="addJob()">Save</button>
+        <button class="btn btn-secondary" onclick="toggleAddJob()">Cancel</button>
+      </div>
+    </div>
+    <div id="job-list"></div>
+  </div>
+</div>
+
+<div id="tab-settings" class="page">
+  <div class="card">
+    <h2>Settings</h2>
+    <p>Your API key is stored locally in your browser — it never leaves your device.</p>
+    <div class="api-section">
+      <h3>Anthropic API key</h3>
+      <p>Get your key at console.anthropic.com. You get free credits to start.</p>
+      <div class="api-row">
+        <input type="password" id="api-key-input" placeholder="sk-ant-..." />
+        <button class="btn btn-primary" onclick="saveApiKey()">Save</button>
+        <span class="saved-badge" id="saved-badge">Saved!</span>
+      </div>
+    </div>
+    <h2 style="margin-bottom:4px; margin-top:8px;">About this tool</h2>
+    <p style="font-size:13px; color:#666; line-height:1.6;">Built by Maria Wallace as a personal job search agent. Uses Claude AI to analyze job fit, generate interview prep, and track applications. This tool runs entirely in your browser — no data is sent anywhere except the Anthropic API to generate responses.</p>
+  </div>
+</div>
+
+<script>
+const MARIA = `You are a job fit analyst and interview coach for Maria Wallace, a senior revenue enablement professional.
+
+IDENTITY & TARGET
+Location: Holly Springs, NC | Open to: remote or RDU hybrid
+Target comp: ~$180K | Target titles: Director/Senior Manager Sales Enablement, GTM Enablement Manager, Senior Enablement AI Specialist
+Ideal: SaaS, products she can use as end user, growth-stage to enterprise
+
+CAREER (10+ years total, 8+ years dedicated enablement)
+ClickUp (Jan 2025–May 2026, RIF): Rebuilt commercial onboarding 40%→60% ramp rate, $10K→$25K+ first deal ARR, 9.7+ CSAT, AI agents saving 10hrs/cycle, AE Academy 100% promotion + Q1 attainment, vibe-coded HTML/GUI onboarding app with AI agents + manager portal, expanded to own PLGTM onboarding (CS, SEs, PS), led SKO SMB content (100+ attendees)
+Walmart Connect (Oct 2022–Jan 2025): 13% revenue increase from product training, led 4 facilitators, 300+ person org, Challenger methodology, StrengthsFinder workshop 300+, built first CMS 99% adoption
+Calm (Apr–Aug 2022, RIF): Stood up first enablement function, 30+ courses in 90 days
+Medallia (Jun 2021–Apr 2022): Founded Medallia University, $37M pipeline, 15% course completion increase, MEDDPICC + Command of the Message
+Valassis (Jan 2020–Jun 2021): Cut ramp time 13%, Diamond Award
+SAS Institute Training (Aug 2018–Jan 2020): Global onboarding, standardized curriculum
+SAS Institute AE (Feb 2016–Aug 2018): B2B SaaS quota carrier, 120% of quota 2017
+Frito-Lay (Jun 2012–Jan 2016): District Sales Manager, 17-person team, $10M+ district, 123rd→9th nationally
+
+TOOLS: Articulate, Gong, WorkRamp, Mindtickle, Seismic, Salesforce, Outreach, ClickUp, Confluence, GSuite, Workday Learning (admin)
+METHODOLOGIES: MEDDPICC, Challenger Sale, Command of the Message, Value Selling, Force Management
+STRENGTHS: Builder, cross-functional leader, exceptional presenter, data-driven, AI-forward, fast executor, Spanish (conversational)
+GAPS: No formal direct reports in enablement (team lead experience), post-sales CS experience recent/limited`;
+
+function getApiKey() { return localStorage.getItem('maria_api_key') || ''; }
+
+function saveApiKey() {
+  const key = document.getElementById('api-key-input').value.trim();
+  if (!key) return;
+  localStorage.setItem('maria_api_key', key);
+  document.getElementById('saved-badge').classList.add('show');
+  document.getElementById('api-status').textContent = 'API key saved';
+  setTimeout(() => document.getElementById('saved-badge').classList.remove('show'), 2000);
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const tabs = ['fit','prep','tracker','settings'];
+  const idx = tabs.indexOf(name);
+  document.querySelectorAll('.tab')[idx].classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+  if (name === 'tracker') renderTracker();
+}
+
+async function callClaude(prompt, loadingId, loadingTextEl, msgs) {
+  const key = getApiKey();
+  if (!key) { alert('Please add your Anthropic API key in Settings first.'); return null; }
+  document.getElementById(loadingId).classList.add('show');
+  let i = 0;
+  const interval = setInterval(() => { i=(i+1)%msgs.length; document.getElementById(loadingTextEl).textContent = msgs[i]; }, 2000);
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1500, system: MARIA, messages: [{ role: 'user', content: prompt }] })
+    });
+    clearInterval(interval);
+    document.getElementById(loadingId).classList.remove('show');
+    const data = await res.json();
+    if (data.error) { alert('API error: ' + data.error.message); return null; }
+    return data.content?.map(b => b.text||'').join('').trim();
+  } catch(e) {
+    clearInterval(interval);
+    document.getElementById(loadingId).classList.remove('show');
+    alert('Something went wrong. Check your API key and try again.');
+    return null;
+  }
+}
+
+async function analyzeFit() {
+  const jd = document.getElementById('fit-jd').value.trim();
+  const contact = document.getElementById('fit-contact').value.trim();
+  const err = document.getElementById('fit-error');
+  if (!jd) { err.textContent = 'Please paste a job description.'; err.classList.add('show'); return; }
+  err.classList.remove('show');
+  const prompt = `Analyze this job description for fit with Maria Wallace${contact ? '. Referral contact: ' + contact : ''}.
+
+JD:
+${jd}
+
+Respond with raw JSON only, no markdown:
+{"role_title":"...","company":"...","fit_score":7,"verdict":"Apply","verdict_reason":"one sentence","strengths":"2-3 sentences","gaps":"1-2 sentences or No significant gaps","resume_recommendation":"which resume version and any tweaks","comp_note":"one sentence on comp alignment or Range not listed","referral_blurb":"3-4 sentence first-person blurb from a colleague${contact ? ' — written as if from ' + contact : ''}"}`;
+
+  const text = await callClaude(prompt, 'fit-loading', 'fit-loading-text', ['Analyzing the role...','Comparing against your background...','Assessing fit and gaps...','Almost done...']);
+  if (!text) return;
+  try {
+    const d = JSON.parse(text.replace(/```json|```/g,'').trim());
+    const score = d.fit_score;
+    const sc = score>=7?'score-high':score>=5?'score-mid':'score-low';
+    const vc = d.verdict.toLowerCase().includes('apply')?'verdict-apply':d.verdict==='Pass'?'verdict-pass':'verdict-maybe';
+    document.getElementById('fit-result').innerHTML = `
+      <div class="result-card">
+        <div class="score-row">
+          <div class="score-circle ${sc}">${score}/10</div>
+          <div class="score-meta"><h3>${d.role_title||''}${d.company?' · '+d.company:''}</h3><p class="${vc}">${d.verdict} — ${d.verdict_reason}</p></div>
+        </div>
+        <div class="result-section"><div class="section-title">Where you fit</div><div class="section-body">${d.strengths}</div></div>
+        <hr class="divider">
+        <div class="result-section"><div class="section-title">Honest gaps</div><div class="section-body">${d.gaps}</div></div>
+        <hr class="divider">
+        <div class="result-section"><div class="section-title">Resume recommendation</div><div class="section-body">${d.resume_recommendation}</div></div>
+        <hr class="divider">
+        <div class="result-section"><div class="section-title">Comp alignment</div><div class="section-body">${d.comp_note}</div></div>
+        ${d.referral_blurb?`<hr class="divider"><div class="result-section"><div class="section-title">Referral blurb</div><div class="section-body italic">"${d.referral_blurb}"</div></div>`:''}
+      </div>`;
+    document.getElementById('fit-result').classList.add('show');
+  } catch(e) {
+    document.getElementById('fit-result').innerHTML = `<div class="result-card"><p style="font-size:14px;">${text}</p></div>`;
+    document.getElementById('fit-result').classList.add('show');
+  }
+}
+
+function clearFit() {
+  document.getElementById('fit-jd').value='';
+  document.getElementById('fit-contact').value='';
+  document.getElementById('fit-result').classList.remove('show');
+  document.getElementById('fit-error').classList.remove('show');
+}
+
+async function generatePrep() {
+  const company = document.getElementById('prep-company').value.trim();
+  const role = document.getElementById('prep-role').value.trim();
+  const stage = document.getElementById('prep-stage').value;
+  const interviewer = document.getElementById('prep-interviewer').value.trim();
+  const context = document.getElementById('prep-context').value.trim();
+  const err = document.getElementById('prep-error');
+  if (!company || !role) { err.textContent='Please enter company and role.'; err.classList.add('show'); return; }
+  err.classList.remove('show');
+  const stageLabels = {'hr':'HR/recruiter screen','hiring-manager':'hiring manager interview','stakeholder':'stakeholder/panel interview','case-study':'case study presentation','final':'final round interview'};
+  const prompt = `Generate a complete interview prep guide for Maria Wallace for a ${stageLabels[stage]} at ${company} for the ${role} role.${interviewer?' Interviewer: '+interviewer+'.':''}${context?' Additional context: '+context:''}
+
+Respond with raw JSON only:
+{"company_overview":"2-3 sentences about the company and what makes it relevant to Maria","why_maria_fits":"3-4 sentences on why Maria is a strong candidate for this specific role","likely_questions":["6-8 likely interview questions for this stage and role"],"best_stories":["3-4 of Maria's strongest stories/examples to use, with the specific stat or outcome"],"comp_talking_points":"how Maria should handle comp discussion for this role","questions_to_ask":["4-5 strong questions Maria should ask in this interview"],"watch_outs":"1-2 things to be careful about or prepare for","opening_pitch":"A natural 3-4 sentence answer to tell me about yourself tailored to this specific role"}`;
+
+  const text = await callClaude(prompt, 'prep-loading', 'prep-loading-text', ['Researching the company...','Mapping your experience to the role...','Crafting your stories...','Building your prep guide...']);
+  if (!text) return;
+  try {
+    const d = JSON.parse(text.replace(/```json|```/g,'').trim());
+    document.getElementById('prep-result').innerHTML = `
+      <div class="result-card">
+        <div class="result-section"><div class="section-title">Company context</div><div class="section-body">${d.company_overview}</div></div>
+        <hr class="divider">
+        <div class="result-section"><div class="section-title">Why you fit</div><div class="section-body">${d.why_maria_fits}</div></div>
+        <hr class="divider">
+        <div class="result-section"><div class="section-title">Your opening pitch</div><div class="section-body italic">"${d.opening_pitch}"</div></div>
+        <hr class="divider">
+        <div class="result-section"><div class="section-title">Likely questions</div><ul class="q-list">${(d.likely_questions||[]).map(q=>`<li>${q}</li>`).join('')}</ul></div>
+        <hr class="divider">
+        <div class="result-section"><div class="section-title">Your best stories to tell</div><ul class="q-list">${(d.best_stories||[]).map(s=>`<li>${s}</li>`).join('')}</ul></div>
+        <hr class="divider">
+        <div class="result-section"><div class="section-title">Comp talking points</div><div class="section-body">${d.comp_talking_points}</div></div>
+        <hr class="divider">
+        <div class="result-section"><div class="section-title">Questions to ask</div><ul class="q-list">${(d.questions_to_ask||[]).map(q=>`<li>${q}</li>`).join('')}</ul></div>
+        <hr class="divider">
+        <div class="result-section"><div class="section-title">Watch outs</div><div class="section-body">${d.watch_outs}</div></div>
+      </div>`;
+    document.getElementById('prep-result').classList.add('show');
+  } catch(e) {
+    document.getElementById('prep-result').innerHTML = `<div class="result-card"><p style="font-size:14px;">${text}</p></div>`;
+    document.getElementById('prep-result').classList.add('show');
+  }
+}
+
+function clearPrep() {
+  ['prep-company','prep-role','prep-interviewer','prep-context'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('prep-stage').value='hr';
+  document.getElementById('prep-result').classList.remove('show');
+  document.getElementById('prep-error').classList.remove('show');
+}
+
+function getJobs() { try { return JSON.parse(localStorage.getItem('maria_jobs')||'[]'); } catch(e){return[];} }
+function saveJobs(jobs) { localStorage.setItem('maria_jobs', JSON.stringify(jobs)); }
+
+function renderTracker() {
+  const jobs = getJobs();
+  const counts = {applied:0,screen:0,interview:0,rejected:0,offer:0};
+  jobs.forEach(j=>counts[j.status]=(counts[j.status]||0)+1);
+  document.getElementById('tracker-stats').innerHTML = `
+    <div class="stat-card"><div class="num">${jobs.length}</div><div class="lbl">Total applications</div></div>
+    <div class="stat-card"><div class="num">${counts.screen+counts.interview}</div><div class="lbl">Active conversations</div></div>
+    <div class="stat-card"><div class="num">${counts.interview}</div><div class="lbl">Interviewing</div></div>
+    <div class="stat-card"><div class="num">${counts.offer}</div><div class="lbl">Offers</div></div>`;
+  const statusLabels = {applied:'Applied',screen:'Phone screen',interview:'Interviewing',rejected:'Rejected',offer:'Offer'};
+  document.getElementById('job-list').innerHTML = jobs.length === 0
+    ? '<p style="font-size:14px;color:#888;padding:16px 0;">No applications yet. Add your first one above.</p>'
+    : jobs.map((j,i)=>`
+      <div class="job-row">
+        <div class="job-info"><div class="title">${j.role}</div><div class="company">${j.company}${j.notes?' · '+j.notes:''}</div></div>
+        <span class="status-badge status-${j.status}">${statusLabels[j.status]}</span>
+        <select onchange="updateStatus(${i}, this.value)" style="font-size:12px;padding:4px 8px;border-radius:6px;border:1px solid #e5e5e5;background:white;">
+          ${Object.entries(statusLabels).map(([v,l])=>`<option value="${v}"${j.status===v?' selected':''}>${l}</option>`).join('')}
+        </select>
+        <button onclick="removeJob(${i})" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:18px;padding:0 4px;">×</button>
+      </div>`).join('');
+}
+
+function toggleAddJob() { document.getElementById('add-job-form').classList.toggle('show'); }
+
+function addJob() {
+  const company = document.getElementById('tj-company').value.trim();
+  const role = document.getElementById('tj-role').value.trim();
+  if (!company || !role) { alert('Please enter company and role.'); return; }
+  const jobs = getJobs();
+  jobs.unshift({ company, role, status: document.getElementById('tj-status').value, notes: document.getElementById('tj-notes').value.trim(), date: new Date().toISOString().split('T')[0] });
+  saveJobs(jobs);
+  ['tj-company','tj-role','tj-notes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('tj-status').value='applied';
+  document.getElementById('add-job-form').classList.remove('show');
+  renderTracker();
+}
+
+function updateStatus(i, status) { const jobs=getJobs(); jobs[i].status=status; saveJobs(jobs); renderTracker(); }
+function removeJob(i) { if(!confirm('Remove this application?')) return; const jobs=getJobs(); jobs.splice(i,1); saveJobs(jobs); renderTracker(); }
+
+const key = getApiKey();
+if (key) document.getElementById('api-status').textContent = 'API key saved';
+document.getElementById('api-key-input').value = key;
+renderTracker();
+</script>
+</body>
+</html>
