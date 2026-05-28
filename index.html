@@ -277,10 +277,11 @@ async function callAPI(prompt, loadId, loadTxtId, msgs) {
 }
 
 function parseJSON(text) {
-  let clean = text.replace(/```json|```/g,'').trim();
-  const a = clean.indexOf('{'), b = clean.lastIndexOf('}');
-  if (a !== -1 && b !== -1) clean = clean.slice(a, b+1);
-  return JSON.parse(clean);
+  // Remove everything before first { and after last }
+  const a = text.indexOf('{');
+  const b = text.lastIndexOf('}');
+  if (a === -1 || b === -1) throw new Error('No JSON found');
+  return JSON.parse(text.slice(a, b + 1));
 }
 
 function ql(arr) {
