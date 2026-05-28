@@ -273,7 +273,7 @@ async function callClaude(prompt, loadingId, loadingTextEl, msgs) {
   let i = 0;
   const interval = setInterval(() => { i=(i+1)%msgs.length; document.getElementById(loadingTextEl).textContent = msgs[i]; }, 2000);
   try {
-    const res = await fetch('https://api.allorigins.win/raw?url=https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://maria-api-proxy.mariaewallace4.workers.dev', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 1500, system: MARIA, messages: [{ role: 'user', content: prompt }] })
