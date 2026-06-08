@@ -521,7 +521,7 @@ Respond ONLY with a valid JSON object — no markdown fences, no preamble, no co
   try {
     const resp = await fetch('https://maria-api-proxy.mariaewallace4.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'x-api-key': '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' },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
         max_tokens: 1500,
