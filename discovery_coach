@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Discovery Coach · Customer.io</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cio-dark: #0b363b;
+    --cio-green: #abffae;
+    --cio-mid: #437278;
+    --cio-light: #e8f4f5;
+    --cio-border: rgba(11,54,59,0.12);
+    --cio-border-mid: rgba(11,54,59,0.22);
+    --found: #1D9E75;
+    --found-bg: #E1F5EE;
+    --found-text: #085041;
+    --partial: #BA7517;
+    --partial-bg: #FAEEDA;
+    --partial-text: #633806;
+    --missing: #A32D2D;
+    --missing-bg: #FCEBEB;
+    --missing-text: #501313;
+    --radius: 10px;
+    --radius-lg: 14px;
+  }
+
+  html { font-size: 15px; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #f0f4f4;
+    color: var(--cio-dark);
+    min-height: 100vh;
+  }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    background: var(--cio-dark);
+    padding: 0 2rem;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .topbar-logo {
+    width: 28px;
+    height: 28px;
+    background: var(--cio-green);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .topbar-logo svg { width: 16px; height: 16px; }
+  .topbar-name { font-size: 14px; font-weight: 500; color: #fff; letter-spacing: -0.01em; }
+  .topbar-sep { width: 1px; height: 18px; background: rgba(255,255,255,0.15); }
+  .topbar-tag { font-size: 12px; color: rgba(255,255,255,0.5); font-weight: 300; }
+  .topbar-spacer { flex: 1; }
+  .topbar-badge {
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    color: var(--cio-green);
+    background: rgba(171,255,174,0.1);
+    border: 1px solid rgba(171,255,174,0.2);
+    padding: 3px 10px;
+    border-radius: 99px;
+    letter-spacing: .03em;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  .main {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 4rem;
+  }
+
+  .page-header { margin-bottom: 2rem; }
+  .page-header h1 {
+    font-size: 26px;
+    font-weight: 500;
+    color: var(--cio-dark);
+    letter-spacing: -0.02em;
+    margin-bottom: 5px;
+  }
+  .page-header p { font-size: 14px; color: var(--cio-mid); font-weight: 300; }
+
+  /* ── UPLOAD CARD ── */
+  .upload-card {
+    background: #fff;
+    border: 1px solid var(--cio-border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .drop-zone {
+    border: 1.5px dashed var(--cio-border-mid);
+    border-radius: var(--radius);
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all .15s;
+    background: #f8fafa;
+    margin-bottom: 1rem;
+  }
+  .drop-zone:hover, .drop-zone.dragover {
+    border-color: var(--found);
+    background: var(--found-bg);
+  }
+  .drop-zone.has-file {
+    border-style: solid;
+    border-color: var(--found);
+    background: var(--found-bg);
+  }
+  .drop-icon {
+    width: 40px; height: 40px;
+    background: var(--cio-light);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 12px;
+    transition: background .15s;
+  }
+  .drop-zone:hover .drop-icon, .drop-zone.dragover .drop-icon { background: #c5ede0; }
+  .drop-zone.has-file .drop-icon { background: #c5ede0; }
+  .drop-icon svg { width: 20px; height: 20px; stroke: var(--cio-mid); }
+  .drop-zone.has-file .drop-icon svg { stroke: var(--found); }
+  .drop-label { font-size: 14px; font-weight: 500; color: var(--cio-dark); margin-bottom: 3px; }
+  .drop-hint { font-size: 12px; color: var(--cio-mid); }
+  .drop-zone.has-file .drop-label { color: var(--found-text); }
+  .drop-zone.has-file .drop-hint { color: var(--found); }
+
+  .paste-toggle {
+    font-size: 12px;
+    color: var(--cio-mid);
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    display: inline-block;
+    margin-bottom: 10px;
+  }
+  .paste-toggle:hover { color: var(--cio-dark); }
+
+  textarea {
+    width: 100%;
+    min-height: 140px;
+    resize: vertical;
+    border: 1px solid var(--cio-border-mid);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    font-size: 13px;
+    font-family: 'DM Mono', monospace;
+    color: var(--cio-dark);
+    background: #f8fafa;
+    line-height: 1.6;
+    margin-bottom: 12px;
+    outline: none;
+    transition: border-color .15s;
+  }
+  textarea:focus { border-color: var(--cio-mid); }
+
+  .analyze-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    background: var(--cio-dark);
+    color: var(--cio-green);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background .15s;
+    letter-spacing: -0.01em;
+  }
+  .analyze-btn:hover { background: #0f4a50; }
+  .analyze-btn:disabled { background: #d4dede; color: #8fa8aa; cursor: not-allowed; }
+  .analyze-btn svg { width: 16px; height: 16px; }
+
+  /* ── RESULTS ── */
+  .results { display: flex; flex-direction: column; gap: 14px; margin-top: 1.5rem; }
+
+  .result-card {
+    background: #fff;
+    border: 1px solid var(--cio-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    animation: fadeUp .3s ease forwards;
+    opacity: 0;
+  }
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(8px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  .result-card:nth-child(1) { animation-delay: .05s; }
+  .result-card:nth-child(2) { animation-delay: .12s; }
+  .result-card:nth-child(3) { animation-delay: .19s; }
+  .result-card:nth-child(4) { animation-delay: .26s; }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 1.25rem;
+    border-bottom: 1px solid var(--cio-border);
+    background: #fcfefe;
+  }
+  .card-header-icon {
+    width: 30px; height: 30px;
+    background: var(--cio-light);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .card-header-icon svg { width: 15px; height: 15px; stroke: var(--cio-mid); }
+  .card-title { font-size: 14px; font-weight: 500; color: var(--cio-dark); flex: 1; letter-spacing: -0.01em; }
+  .card-body { padding: 1.25rem; }
+
+  /* score badge */
+  .badge {
+    font-size: 11px;
+    font-weight: 500;
+    font-family: 'DM Mono', monospace;
+    padding: 3px 10px;
+    border-radius: 99px;
+    letter-spacing: .02em;
+  }
+  .badge-strong { background: var(--found-bg); color: var(--found-text); }
+  .badge-partial { background: var(--partial-bg); color: var(--partial-text); }
+  .badge-weak { background: var(--missing-bg); color: var(--missing-text); }
+
+  /* overview */
+  .stat-row { display: flex; gap: 10px; margin-bottom: 1.25rem; }
+  .stat-box {
+    flex: 1;
+    background: #f8fafa;
+    border: 1px solid var(--cio-border);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+  }
+  .stat-num { font-size: 28px; font-weight: 500; color: var(--cio-dark); letter-spacing: -0.03em; line-height: 1; margin-bottom: 3px; }
+  .stat-label { font-size: 11px; color: var(--cio-mid); font-weight: 400; letter-spacing: .01em; }
+
+  .section-head {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--cio-mid);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-bottom: 8px;
+    margin-top: 16px;
+  }
+  .section-head:first-child { margin-top: 0; }
+
+  .insight-row { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 7px; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+  .dot-good { background: var(--found); }
+  .dot-warn { background: var(--partial); }
+  .dot-bad  { background: var(--missing); }
+  .insight-text { font-size: 13px; color: var(--cio-dark); line-height: 1.55; }
+
+  /* meddpicc grid */
+  .medd-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .medd-item {
+    padding: 11px 13px;
+    border-radius: var(--radius);
+    border: 1px solid var(--cio-border);
+    background: #f8fafa;
+  }
+  .medd-top { display: flex; align-items: center; gap: 7px; margin-bottom: 5px; }
+  .medd-indicator { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .ind-found   { background: var(--found); }
+  .ind-partial { background: var(--partial); }
+  .ind-missing { background: var(--missing); }
+  .medd-letter {
+    font-size: 10px;
+    font-weight: 500;
+    font-family: 'DM Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--cio-mid);
+  }
+  .medd-evidence { font-size: 12px; color: var(--cio-dark); line-height: 1.5; }
+  .medd-evidence.empty { color: #a0b4b6; font-style: italic; }
+  .medd-next {
+    font-size: 11px;
+    color: var(--found);
+    margin-top: 6px;
+    line-height: 1.45;
+    padding-top: 6px;
+    border-top: 1px solid var(--cio-border);
+    font-style: italic;
+  }
+
+  /* value prop */
+  .value-box {
+    padding: 16px 18px;
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+  }
+  .value-box-good { background: var(--found-bg); border: 1px solid #9FE1CB; }
+  .value-box-bad  { background: var(--missing-bg); border: 1px solid #F7C1C1; }
+  .value-box-label {
+    font-size: 10px;
+    font-weight: 500;
+    font-family: 'DM Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: 7px;
+  }
+  .value-box-good .value-box-label { color: var(--found); }
+  .value-box-bad  .value-box-label { color: var(--missing); }
+  .value-box-text { font-size: 14px; line-height: 1.6; font-weight: 300; }
+  .value-box-good .value-box-text { color: var(--found-text); }
+  .value-box-bad  .value-box-text { color: var(--missing-text); }
+
+  /* coaching */
+  .next-ask {
+    font-size: 13px;
+    color: var(--cio-dark);
+    background: #f8fafa;
+    border-left: 3px solid var(--found);
+    padding: 9px 13px;
+    border-radius: 0 var(--radius) var(--radius) 0;
+    margin-bottom: 6px;
+    line-height: 1.5;
+    font-style: italic;
+  }
+
+  /* loading */
+  .loading-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--cio-mid);
+    font-size: 14px;
+    font-weight: 300;
+  }
+  .loading-bar {
+    width: 140px;
+    height: 3px;
+    background: var(--cio-border);
+    border-radius: 99px;
+    margin: 16px auto 0;
+    overflow: hidden;
+  }
+  .loading-bar-fill {
+    height: 100%;
+    background: var(--found);
+    border-radius: 99px;
+    animation: loadpulse 1.4s ease-in-out infinite;
+  }
+  @keyframes loadpulse {
+    0%   { width:0%; margin-left:0; }
+    50%  { width:70%; margin-left:15%; }
+    100% { width:0%; margin-left:100%; }
+  }
+
+  .reset-link {
+    display: inline-block;
+    margin-top: 1.5rem;
+    font-size: 12px;
+    color: var(--cio-mid);
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .reset-link:hover { color: var(--cio-dark); }
+
+  @media (max-width: 540px) {
+    .medd-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-logo">
+    <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="8" cy="8" r="5" stroke="#0b363b" stroke-width="2"/>
+      <circle cx="8" cy="8" r="2" fill="#0b363b"/>
+    </svg>
+  </div>
+  <span class="topbar-name">Customer.io</span>
+  <div class="topbar-sep"></div>
+  <span class="topbar-tag">Revenue Enablement</span>
+  <div class="topbar-spacer"></div>
+  <span class="topbar-badge">Discovery Coach</span>
+</div>
+
+<div class="main">
+  <div class="page-header">
+    <h1>Discovery Coach</h1>
+    <p>Upload a call transcript to get MEDDPICC coverage, discovery quality scoring, and a tailored Customer.io value prop.</p>
+  </div>
+
+  <div id="input-section">
+    <div class="upload-card">
+      <div class="drop-zone" id="drop-zone"
+        onclick="document.getElementById('file-input').click()"
+        ondragover="handleDrag(event,true)"
+        ondragleave="handleDrag(event,false)"
+        ondrop="handleDrop(event)">
+        <div class="drop-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="12" y1="18" x2="12" y2="12"/>
+            <polyline points="9 15 12 12 15 15"/>
+          </svg>
+        </div>
+        <div class="drop-label" id="drop-label">Drop your call transcript here</div>
+        <div class="drop-hint" id="drop-hint">or click to upload · .txt, .doc, .pdf</div>
+      </div>
+      <input type="file" id="file-input" accept=".txt,.pdf,.doc,.docx" style="display:none" onchange="handleFile(event)">
+
+      <span class="paste-toggle" onclick="togglePaste()">Or paste transcript text directly</span>
+      <textarea id="paste-area" placeholder="Paste transcript here...&#10;&#10;Rep: Tell me about your current setup...&#10;Prospect: Sure, we're using..." style="display:none"></textarea>
+
+      <button class="analyze-btn" id="analyze-btn" onclick="analyze()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        Analyze transcript
+      </button>
+    </div>
+  </div>
+
+  <div id="results-section" class="results"></div>
+  <span class="reset-link" id="reset-link" style="display:none" onclick="reset()">← Analyze a different transcript</span>
+</div>
+
+<script>
+let transcriptText = '';
+let pasteVisible = false;
+
+function togglePaste() {
+  pasteVisible = !pasteVisible;
+  document.getElementById('paste-area').style.display = pasteVisible ? 'block' : 'none';
+}
+function handleDrag(e, over) {
+  e.preventDefault();
+  document.getElementById('drop-zone').classList.toggle('dragover', over);
+}
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('drop-zone').classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (file) readFile(file);
+}
+function handleFile(e) {
+  const file = e.target.files[0];
+  if (file) readFile(file);
+}
+function readFile(file) {
+  const reader = new FileReader();
+  reader.onload = ev => {
+    transcriptText = ev.target.result;
+    document.getElementById('drop-zone').classList.add('has-file');
+    document.getElementById('drop-label').textContent = file.name;
+    document.getElementById('drop-hint').textContent = Math.round(transcriptText.length / 1000) + 'k characters · ready to analyze';
+  };
+  reader.readAsText(file);
+}
+
+async function analyze() {
+  const pasted = document.getElementById('paste-area').value.trim();
+  if (pasted) transcriptText = pasted;
+  if (!transcriptText || transcriptText.length < 50) {
+    alert('Please upload or paste a call transcript first.');
+    return;
+  }
+  document.getElementById('analyze-btn').disabled = true;
+  document.getElementById('input-section').style.opacity = '0.5';
+  const rs = document.getElementById('results-section');
+  rs.innerHTML = `<div class="loading-state">Analyzing discovery quality and MEDDPICC coverage…<div class="loading-bar"><div class="loading-bar-fill"></div></div></div>`;
+
+  const system = `You are an expert Revenue Enablement coach specializing in enterprise SaaS sales. You analyze call transcripts and coach sellers on discovery quality using the MEDDPICC framework.
+
+Customer.io is a customer engagement platform that helps companies send personalized, automated messaging across email, push, SMS, and in-app channels — triggered by real-time behavioral data. Its core value props: reducing manual campaign work, increasing conversion through behavioral triggers, improving retention via lifecycle messaging, giving growth/marketing teams full control without engineering dependency, and replacing rigid legacy tools like Braze or Salesforce Marketing Cloud.
+
+Respond ONLY with a valid JSON object — no markdown fences, no preamble, no commentary. Use exactly this structure:
+{
+  "discovery_score": "Strong|Partial|Weak",
+  "question_count": <integer>,
+  "question_quality": "Strong|Partial|Weak",
+  "question_notes": "<2 sentences>",
+  "pain_uncovered": true|false,
+  "pain_summary": "<what pain was found, or 'No clear pain uncovered'>",
+  "business_impact_tied": true|false,
+  "business_impact_note": "<1–2 sentences>",
+  "meddpicc": {
+    "metrics":          {"status":"found|partial|missing","evidence":"<quote or summary>","next_ask":"<question if missing/partial, else empty>"},
+    "economic_buyer":   {"status":"found|partial|missing","evidence":"","next_ask":""},
+    "decision_criteria":{"status":"found|partial|missing","evidence":"","next_ask":""},
+    "decision_process": {"status":"found|partial|missing","evidence":"","next_ask":""},
+    "paper_process":    {"status":"found|partial|missing","evidence":"","next_ask":""},
+    "identify_pain":    {"status":"found|partial|missing","evidence":"","next_ask":""},
+    "champion":         {"status":"found|partial|missing","evidence":"","next_ask":""},
+    "competition":      {"status":"found|partial|missing","evidence":"","next_ask":""}
+  },
+  "value_prop_found": true|false,
+  "value_prop": "<2–3 sentence tailored value prop grounded in prospect's exact words — empty if discovery too weak>",
+  "value_prop_missed_reason": "<if value_prop_found false, explain what gaps prevented value mapping>",
+  "top_coaching_points": ["<specific actionable point 1>","<specific actionable point 2>","<specific actionable point 3>"],
+  "next_best_asks": ["<exact question for next call 1>","<exact question 2>","<exact question 3>"]
+}`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1500,
+        system,
+        messages: [{ role: 'user', content: `Analyze this call transcript:\n\n${transcriptText.slice(0, 10000)}` }]
+      })
+    });
+    const data = await resp.json();
+    let raw = data.content?.[0]?.text || '{}';
+    raw = raw.replace(/```json|```/g, '').trim();
+    const r = JSON.parse(raw);
+    renderResults(r);
+  } catch(e) {
+    rs.innerHTML = `<div class="loading-state" style="color:#A32D2D;">Something went wrong. Please try again.</div>`;
+    document.getElementById('analyze-btn').disabled = false;
+    document.getElementById('input-section').style.opacity = '1';
+  }
+}
+
+const MEDD_LABELS = {
+  metrics: 'Metrics', economic_buyer: 'Economic buyer',
+  decision_criteria: 'Decision criteria', decision_process: 'Decision process',
+  paper_process: 'Paper process', identify_pain: 'Identified pain',
+  champion: 'Champion', competition: 'Competition'
+};
+
+function esc(t) {
+  return (t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function scoreClass(s) {
+  return s==='Strong'?'badge-strong':s==='Partial'?'badge-partial':'badge-weak';
+}
+function indClass(s) {
+  return s==='found'?'ind-found':s==='partial'?'ind-partial':'ind-missing';
+}
+function dotClass(s) {
+  return s==='Strong'?'dot-good':s==='Partial'?'dot-warn':'dot-bad';
+}
+
+function renderResults(r) {
+  const rs = document.getElementById('results-section');
+
+  // ── Card 1: Overview ──
+  let html = `
+  <div class="result-card">
+    <div class="card-header">
+      <div class="card-header-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/>
+          <line x1="6" y1="20" x2="6" y2="14"/>
+        </svg>
+      </div>
+      <span class="card-title">Discovery overview</span>
+      <span class="badge ${scoreClass(r.discovery_score)}">${esc(r.discovery_score)}</span>
+    </div>
+    <div class="card-body">
+      <div class="stat-row">
+        <div class="stat-box"><div class="stat-num">${r.question_count}</div><div class="stat-label">Questions asked</div></div>
+        <div class="stat-box"><div class="stat-num" style="font-size:20px;padding-top:4px;">${r.question_quality}</div><div class="stat-label">Question quality</div></div>
+        <div class="stat-box"><div class="stat-num" style="font-size:20px;padding-top:4px;">${r.pain_uncovered?'Yes':'No'}</div><div class="stat-label">Pain uncovered</div></div>
+      </div>
+      <div class="section-head">Question quality</div>
+      <div class="insight-row"><div class="dot ${dotClass(r.question_quality)}"></div><div class="insight-text">${esc(r.question_notes)}</div></div>
+      <div class="section-head">Pain & business impact</div>
+      <div class="insight-row"><div class="dot ${r.pain_uncovered?'dot-good':'dot-bad'}"></div><div class="insight-text">${esc(r.pain_summary)}</div></div>
+      <div class="insight-row"><div class="dot ${r.business_impact_tied?'dot-good':'dot-warn'}"></div><div class="insight-text">${esc(r.business_impact_note)}</div></div>
+    </div>
+  </div>`;
+
+  // ── Card 2: MEDDPICC ──
+  html += `
+  <div class="result-card">
+    <div class="card-header">
+      <div class="card-header-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 11 12 14 22 4"/>
+          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+        </svg>
+      </div>
+      <span class="card-title">MEDDPICC coverage</span>
+    </div>
+    <div class="card-body">
+      <div class="medd-grid">`;
+
+  Object.entries(r.meddpicc).forEach(([key, val]) => {
+    html += `<div class="medd-item">
+      <div class="medd-top">
+        <span class="medd-indicator ${indClass(val.status)}"></span>
+        <span class="medd-letter">${MEDD_LABELS[key]||key}</span>
+      </div>
+      <div class="medd-evidence ${val.evidence?'':'empty'}">${val.evidence ? esc(val.evidence) : 'Not captured'}</div>
+      ${val.status !== 'found' && val.next_ask ? `<div class="medd-next">Ask: "${esc(val.next_ask)}"</div>` : ''}
+    </div>`;
+  });
+
+  html += `</div></div></div>`;
+
+  // ── Card 3: Value prop ──
+  if (r.value_prop_found) {
+    html += `
+    <div class="result-card">
+      <div class="card-header">
+        <div class="card-header-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+        </div>
+        <span class="card-title">Customer.io value prop for this prospect</span>
+      </div>
+      <div class="card-body">
+        <div class="value-box value-box-good">
+          <div class="value-box-label">Tailored value prop</div>
+          <div class="value-box-text">${esc(r.value_prop)}</div>
+        </div>
+      </div>
+    </div>`;
+  } else {
+    html += `
+    <div class="result-card">
+      <div class="card-header">
+        <div class="card-header-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+        </div>
+        <span class="card-title">Customer.io value prop for this prospect</span>
+      </div>
+      <div class="card-body">
+        <div class="value-box value-box-bad">
+          <div class="value-box-label">Discovery too weak to map value</div>
+          <div class="value-box-text">${esc(r.value_prop_missed_reason)}</div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // ── Card 4: Coaching ──
+  html += `
+  <div class="result-card">
+    <div class="card-header">
+      <div class="card-header-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+      </div>
+      <span class="card-title">Coaching & next steps</span>
+    </div>
+    <div class="card-body">
+      <div class="section-head">What to work on</div>`;
+
+  (r.top_coaching_points||[]).forEach(pt => {
+    html += `<div class="insight-row"><div class="dot dot-warn"></div><div class="insight-text">${esc(pt)}</div></div>`;
+  });
+
+  html += `<div class="section-head" style="margin-top:16px;">Ask on the next call</div>`;
+  (r.next_best_asks||[]).forEach(q => {
+    html += `<div class="next-ask">"${esc(q)}"</div>`;
+  });
+
+  html += `</div></div>`;
+
+  rs.innerHTML = html;
+  document.getElementById('reset-link').style.display = 'inline-block';
+}
+
+function reset() {
+  transcriptText = '';
+  document.getElementById('paste-area').value = '';
+  document.getElementById('paste-area').style.display = 'none';
+  document.getElementById('file-input').value = '';
+  document.getElementById('drop-zone').classList.remove('has-file');
+  document.getElementById('drop-label').textContent = 'Drop your call transcript here';
+  document.getElementById('drop-hint').textContent = 'or click to upload · .txt, .doc, .pdf';
+  document.getElementById('analyze-btn').disabled = false;
+  document.getElementById('input-section').style.opacity = '1';
+  document.getElementById('results-section').innerHTML = '';
+  document.getElementById('reset-link').style.display = 'none';
+  pasteVisible = false;
+}
+</script>
+</body>
+</html>
